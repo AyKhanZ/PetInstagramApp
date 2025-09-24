@@ -46,23 +46,45 @@ public class AnimalTypeService : IAnimalTypeService
         return Task.CompletedTask;
     }
 
+    //public Task UpdateAnimalType(Guid id, UpdateAnimalTypeCommand command)
+    //{
+    //    _context.AnimalTypes
+    //        .Where(at => at.Id == id)
+    //        .ExecuteUpdateAsync(at => at
+    //            .SetProperty(a => a.Title, command.Title)
+    //            .SetProperty(a => a.ImagePath, command.ImagePath));
+
+    //    return Task.CompletedTask;
+    //}
+
     public Task UpdateAnimalType(Guid id, UpdateAnimalTypeCommand command)
     {
-        _context.AnimalTypes
-            .Where(at => at.Id == id)
-            .ExecuteUpdateAsync(at => at
-                .SetProperty(a => a.Title, command.Title)
-                .SetProperty(a => a.ImagePath, command.ImagePath));
-
+        var entity = _context.AnimalTypes.FindAsync(id);
+        if (entity == null) throw;
+        
+        entity.Title = command.Title;
+        entity.ImagePath = command.ImagePath;
+        _context.SaveChangesAsync();
+        
         return Task.CompletedTask;
     }
 
+    //public Task DeleteAnimalType(Guid id)
+    //{
+    //    _context.AnimalTypes
+    //        .Where(at => at.Id == id)
+    //        .ExecuteDeleteAsync();
+    //    return Task.CompletedTask;
+    //}
+    
     public Task DeleteAnimalType(Guid id)
     {
-        _context.AnimalTypes
-            .Where(at => at.Id == id)
-            .ExecuteDeleteAsync();
-
+        var entity = _context.AnimalTypes.FindAsync(id);
+        if (entity == null) throw;
+        
+        _context.AnimalTypes.Remove(entity);
+        _context.SaveChangesAsync();
+        
         return Task.CompletedTask;
     }
 }
